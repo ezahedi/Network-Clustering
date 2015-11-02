@@ -39,7 +39,6 @@ def _kmeans_init(G, n_clusters, method='balanced'):
 D_Matrix = nx.floyd_warshall_numpy(G)    
 
 
-
 centeroids = _kmeans_init(G, n_clusters)
 def _cal_dist2center(G, Centeroids):
     """ Calculate the distances to cluster centers
@@ -50,7 +49,6 @@ def _cal_dist2center(G, Centeroids):
         for j in range(len(G.nodes())):
             Dict[i].append(D_Matrix[i,j])
     return(Dict) 
-
 
 
 Dict = _cal_dist2center(G, centeroids)
@@ -64,9 +62,7 @@ def Dict2Matr(Dict):
     return(Matr)
 
 
-
 A = Dict2Matr(Dict)
-
 def _assign_clusters(G,A):
     """ Assign each point to the closet cluster center    
     """
@@ -82,11 +78,8 @@ def _assign_clusters(G,A):
             Clusters.append(Dict[i])
     return(Clusters)
     
-
-
+    
 Clusters = _assign_clusters(G,A)
-
-
 def _kmeans_run(G, n_clusters, centeroids):
     """ Run a single trial of k-means clustering
         on dataset X, and given number of clusters
@@ -117,8 +110,6 @@ def _update_centers(D_Matrix, Clusters, n_clusters):
 
 
 New_Centers = _update_centers(D_Matrix, Clusters, n_clusters)
-
-
 def _kmeans(G, n_clusters):
     """ Run multiple trials of k-means clustering,
         and outputt is the best centers, and cluster labels
@@ -136,7 +127,6 @@ def _kmeans(G, n_clusters):
             New_Centroids = list(New_Centroids)
             Clusters = _kmeans_run(G, n_clusters, New_Centroids)
             New_Centroids = set(_update_centers(D_Matrix, Clusters, n_clusters))
-
 
 
 def Best_initial(G, n_clusters, iteration = 10):
@@ -159,12 +149,9 @@ def Best_initial(G, n_clusters, iteration = 10):
     return(Best_Centroids)
 
 
-
 print('Centroids :', Best_initial(G, n_clusters, iteration = 10))
 A = Best_initial(G, n_clusters, iteration = 10)
 print('Clusters :', _kmeans_run(G, n_clusters, A))
-
-
 
 
 class KMeans(object):
@@ -211,12 +198,6 @@ class KMeans(object):
         self.fit(X)
         return(self.labels_)
 
-     
-        
-        
-        
-        
-        
 
 pos=nx.spring_layout(G) # positions for all nodes
 node_colors = ['b','g','r','y','c','k','m'] 
@@ -226,7 +207,6 @@ Clust = _kmeans_run(G, n_clusters, A)
 
 for item in range(n_clusters):
     for group in Clust[item]:
-
         nx.draw_networkx_nodes(G,pos,
                                nodelist = Clust[item],
                                node_color=node_colors[item],
