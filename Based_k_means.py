@@ -233,15 +233,7 @@ plt.axis('off')
 plt.savefig("labels_and_colors.png") # save as png
 plt.show() # display
         
-
   
 nx.write_gml(G,"test.gml")
 nx.write_edgelist(G, "test.edgelist")
 fh=open("test.edgelist", 'w')
-
-#nx.write_edgelist(G,fh)
-#nx.write_edgelist(G,"test.edgelist.gz")
-
-
-  
-        
