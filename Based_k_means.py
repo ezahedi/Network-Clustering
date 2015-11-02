@@ -1,7 +1,7 @@
 """
 Created on Sun Oct 11 22:29:06 2015
 
-@author: Emad Zahedi
+@authors: Emad Zahedi and Vahid Mirjalili
 
 Input : A connected graph G
 Output : n clusters 
@@ -87,12 +87,6 @@ def _assign_clusters(G,A):
 Clusters = _assign_clusters(G,A)
 
 
-
-
-
-
-
-
 def _kmeans_run(G, n_clusters, centeroids):
     """ Run a single trial of k-means clustering
         on dataset X, and given number of clusters
@@ -125,8 +119,6 @@ def _update_centers(D_Matrix, Clusters, n_clusters):
 New_Centers = _update_centers(D_Matrix, Clusters, n_clusters)
 
 
-
-
 def _kmeans(G, n_clusters):
     """ Run multiple trials of k-means clustering,
         and outputt is the best centers, and cluster labels
@@ -144,10 +136,6 @@ def _kmeans(G, n_clusters):
             New_Centroids = list(New_Centroids)
             Clusters = _kmeans_run(G, n_clusters, New_Centroids)
             New_Centroids = set(_update_centers(D_Matrix, Clusters, n_clusters))
-
-            
-         
-
 
 
 
@@ -175,14 +163,6 @@ def Best_initial(G, n_clusters, iteration = 10):
 print('Centroids :', Best_initial(G, n_clusters, iteration = 10))
 A = Best_initial(G, n_clusters, iteration = 10)
 print('Clusters :', _kmeans_run(G, n_clusters, A))
-
-
-
-
-
-
-
-
 
 
 
