@@ -2,7 +2,7 @@
 @authors: Emad Zahedi and Vahid Mirjalili
 
 Input : A connected graph G
-Output : n clusters 
+Output : n clusters based on k_means
 """
 import math
 import random
