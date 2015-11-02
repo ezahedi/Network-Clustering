@@ -1,6 +1,4 @@
 """
-Created on Sun Oct 11 22:29:06 2015
-
 @authors: Emad Zahedi and Vahid Mirjalili
 
 Input : A connected graph G
