@@ -2,7 +2,7 @@
 """
 Created on Tue Oct 20 22:28:20 2015
 
-@author: andreagoodluck
+@authors: Emad Zahedi & Vahid Mirjalili
 """
 
 
@@ -29,8 +29,6 @@ random.seed(0)
 
 
 Iterations = 3
-
-
 G=nx.Graph()
 
 G.add_edge('a','b',weight=0.6)
@@ -39,36 +37,6 @@ G.add_edge('c','d',weight=0.1)
 G.add_edge('c','e',weight=0.7)
 G.add_edge('c','f',weight=0.9)
 G.add_edge('a','d',weight=0.3)
-'''
-
-
-
-G=nx.Graph()
-
-G.add_edge('1','2',weight=0.24)
-G.add_edge('1','3',weight=0.22)
-G.add_edge('1','4',weight=0.37)
-G.add_edge('1','5',weight=0.34)
-G.add_edge('1','6',weight=0.23)
-
-G.add_edge('2','3',weight=0.15)
-G.add_edge('2','4',weight=0.20)
-G.add_edge('2','5',weight=0.14)
-G.add_edge('2','6',weight=0.25)
-
-G.add_edge('3','4',weight=0.15)
-G.add_edge('3','5',weight=0.28)
-G.add_edge('3','6',weight=0.11)
-
-G.add_edge('4','5',weight=0.29)
-G.add_edge('4','6',weight=0.22)
-
-G.add_edge('5','6',weight=0.39)
-'''
-
-
-
-
 
 
 val_map = {'A': 1.0,
@@ -86,28 +54,11 @@ pylab.show()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 D_Matrix = nx.floyd_warshall_numpy(G) 
 nodes_label = []
 for i in range(len(G.nodes())):
      nodes_label.append(set(G.nodes()[i]))
 A = np.vstack([D_Matrix, nodes_label])
-
-
-#print(A)
-
-
 
 
 def _Index(Matrix, a):
@@ -117,7 +68,6 @@ def _Index(Matrix, a):
                 #print('(Matrix.shape[0])',(Matrix.shape[0]))
                 #print('(Matrix.shape[1])',(Matrix.shape[1]))
                 return(i,j)
-            
 
 
 
@@ -139,51 +89,6 @@ for iter in range(Iterations):
     A = np.delete(A, j, 0)
     A = np.delete(A, j, 1)
 
-    
-#print(A)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 pos=nx.spring_layout(G) # positions for all nodes
 node_colors = ['b','g','r','y','c','k','m'] 
@@ -204,26 +109,12 @@ nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
 nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
 
 
-
-
 # some math labels
 labels={}
 for i in range(len(G.nodes())):
     labels[i]= G.nodes()[i]
 
-#nx.draw_networkx_labels(G,pos,labels,font_size=16)
 
 plt.axis('off')
 plt.savefig("labels_and_colors.png") # save as png
 plt.show() # display
-'''        
-
-  
-nx.write_gml(G,"test.gml")
-nx.write_edgelist(G, "test.edgelist")
-fh=open("test.edgelist", 'w')
-nx.write_edgelist(G,fh)
-nx.write_edgelist(G,"test.edgelist.gz")
-
-'''
-        
