@@ -230,8 +230,3 @@ nx.draw_networkx_labels(G,pos,labels,font_size=16)
 plt.axis('off')
 plt.savefig("labels_and_colors.png") # save as png
 plt.show() # display
-        
-  
-nx.write_gml(G,"test.gml")
-nx.write_edgelist(G, "test.edgelist")
-fh=open("test.edgelist", 'w')
