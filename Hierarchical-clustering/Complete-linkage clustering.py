@@ -3,6 +3,7 @@
 @author: Emad Zahedi & Vahid Mirjalili
 Input: A graph G.
 Output: Clusters obtained by Complete linkage method pluse drawn colored graphs 
+Note: If you are looking for specific level, like 'k', of clusters remove the for loop and initiate Iteration = 'k'
 """
 import numpy as np
 import networkx as nx
