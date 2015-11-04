@@ -1,22 +1,13 @@
 """
 @authors: Emad Zahedi and Vahid Mirjalili
-
 Input : A connected graph G
 Output : n clusters based on k_means
 """
-import math
 import random
 import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
-import scipy.io
-import sys
-from networkx.utils import dict_to_numpy_array
-from collections import defaultdict
-import time
 import operator
-import matplotlib.pyplot as pyplot
-import copy
 import pandas
 random.seed(0)
 
@@ -119,8 +110,8 @@ def _kmeans(G, n_clusters):
         if Old_Centroids == New_Centroids:
             return(New_Centroids) #,_kmeans_run(G, n_clusters, New_Centroids))
             break
+        
         else:
-            #print('OOOO',Old_Centroids , New_Centroids )
             Old_Centroids = New_Centroids
             New_Centroids = list(New_Centroids)
             Clusters = _kmeans_run(G, n_clusters, New_Centroids)
