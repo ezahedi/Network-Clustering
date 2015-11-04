@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Oct 20 22:28:20 2015
-
 @author: Emad Zahedi & Vahid Mirjalili
+Input: A graph G.
+Output: Clusters obtained by Average linkage method pluse drawn colored graphs 
 """
 import numpy as np
 import networkx as nx
