@@ -9,6 +9,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import operator
 import pandas
+import pylab
 random.seed(0)
 
 G = nx.fast_gnp_random_graph(8,.4)
@@ -201,23 +202,9 @@ for item in range(n_clusters):
                                node_color=node_colors[item],
                                node_size=80,
                            alpha=0.8)
-
-
-# edges
-nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
-nx.draw_networkx_edges(G,pos,
-                       edgelist=G.edges(),
-                       width=.1,alpha=0.5,edge_color='k')
-
-
-
-# some math labels
-labels={}
-for i in range(len(G.nodes())):
-    labels[i]= str(i)
-
-nx.draw_networkx_labels(G,pos,labels,font_size=16)
-
-plt.axis('off')
-plt.savefig("labels_and_colors.png") # save as png
-plt.show() # display
+edge_colors = 'k'
+edge_labels=dict([((u,v,),d['weight'])
+             for u,v,d in G.edges(data=True)])               
+nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
+nx.draw(G,pos, node_color = values, node_size=1,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
+pylab.show()
