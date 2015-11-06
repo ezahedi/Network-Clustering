@@ -10,9 +10,21 @@ import matplotlib.pyplot as plt
 import operator
 import pandas
 import pylab
-random.seed(0)
+G=nx.Graph()
 
-G = nx.fast_gnp_random_graph(8,.4)
+
+G.add_edge(0,1,weight=1)
+G.add_edge(0,2,weight=1)
+G.add_edge(2,4,weight=1)
+G.add_edge(2,5,weight=1)
+G.add_edge(0,3,weight=1)
+G.add_edge(6,3,weight=1)
+G.add_edge(7,3,weight=1)
+G.add_edge(8,1,weight=1)
+G.add_edge(9,1,weight=1)
+G.add_edge(9,8,weight=1)
+G.add_edge(6,7,weight=1)
+
 n_clusters = 3
 
 
