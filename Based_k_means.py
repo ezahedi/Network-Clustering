@@ -10,8 +10,10 @@ import matplotlib.pyplot as plt
 import operator
 import pandas
 import pylab
-G=nx.Graph()
 
+
+
+G=nx.Graph()
 
 G.add_edge(0,1,weight=1)
 G.add_edge(0,2,weight=1)
@@ -24,6 +26,23 @@ G.add_edge(8,1,weight=1)
 G.add_edge(9,1,weight=1)
 G.add_edge(9,8,weight=1)
 G.add_edge(6,7,weight=1)
+
+val_map = {'A': 1.0,
+                   'D': 0.5714285714285714,
+                              'H': 0.0}
+values = [val_map.get(node, 0.45) for node in G.nodes()]
+edge_colors = 'k'
+
+edge_labels=dict([((u,v,),d['weight'])
+             for u,v,d in G.edges(data=True)])
+pos=nx.spring_layout(G) # positions for all nodes                
+nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
+nx.draw(G,pos, node_color = values, node_size=15,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
+pylab.show()
+
+
+
+
 
 n_clusters = 3
 
@@ -162,28 +181,24 @@ class KMeans(object):
         Parameters
         -------
            n_clusters: number of clusters (default = 2)
-           n_trials: number of trial random centroid initialization (default = 10)
            max_iter: maximum number of iterations (default = 100)
-           tol: tolerance (default = 0.0001)
-        Attibutes
+           
+        Attributes
         -------
            labels_   :  cluster labels for each data item
            centers_  :  cluster centers
-           sse_arr_  :  array of SSE values for each cluster
-           n_iter_   :  number of iterations for the best trial
+           
            
         Methods
         ------- 
            fit(X): fit the model
-           fit_predict(X): fit the model and return the cluster labels
+           fit_predict(X): fit the model and return the clusters
     """
 
-    def __init__(self, n_clusters=2, n_trials=10, max_iter=100, tol=0.001):
+    def __init__(self, n_clusters=2, max_iter=100):
         
         self.n_clusters = n_clusters
-        self.n_trials = n_trials
         self.max_iter = max_iter
-        self.tol = tol
 
     def fit(self, X):
         """ Apply KMeans Clustering
@@ -201,6 +216,7 @@ class KMeans(object):
         return(self.labels_)
 
 
+
 pos=nx.spring_layout(G) # positions for all nodes
 node_colors = ['b','g','r','y','c','k','m'] 
 # nodes
@@ -214,20 +230,10 @@ for item in range(n_clusters):
                                node_color=node_colors[item],
                                node_size=80,
                            alpha=0.8)
-# edges
-nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
+
+edge_colors = 'k'
+edge_labels=dict([((u,v,),d['weight'])
+             for u,v,d in G.edges(data=True)])               
 nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
-
-
-
-
-# some math labels
-labels={}
-for i in range(len(G.nodes())):
-    labels[i]= G.nodes()[i]
-
-
-
-plt.axis('off')
-plt.savefig("labels_and_colors.png") # save as png
-plt.show() # display
+nx.draw(G,pos, node_color = values, node_size=1,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
+pylab.show()
