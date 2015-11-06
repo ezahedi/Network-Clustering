@@ -214,9 +214,20 @@ for item in range(n_clusters):
                                node_color=node_colors[item],
                                node_size=80,
                            alpha=0.8)
-edge_colors = 'k'
-edge_labels=dict([((u,v,),d['weight'])
-             for u,v,d in G.edges(data=True)])               
+# edges
+nx.draw_networkx_edges(G,pos,width=1.0,alpha=0.5)
 nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
-nx.draw(G,pos, node_color = values, node_size=1,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
-pylab.show()
+
+
+
+
+# some math labels
+labels={}
+for i in range(len(G.nodes())):
+    labels[i]= G.nodes()[i]
+
+
+
+plt.axis('off')
+plt.savefig("labels_and_colors.png") # save as png
+plt.show() # display
