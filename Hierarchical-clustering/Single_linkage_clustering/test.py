@@ -1,8 +1,8 @@
-import Average_linkage_clustering as AVG
+import Single_linkage_clustering as SIG 
 import networkx as nx
 import pylab
 import matplotlib.pyplot as plt
-import numpy as np
+
 
 
 G=nx.Graph()
@@ -33,22 +33,21 @@ def main(G):
         nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
         nx.draw(G,pos, node_color = values, node_size=15,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
         pylab.show()
-    
+
         for i in range(len(G.nodes())):
               
             Iterations = i 
-            AL = AVG.Average_linkage(G, Iterations)
-            #print(AL.__str__())
+            SL = SIG.Single_linkage(G, Iterations)
             pos=nx.spring_layout(G) # positions for all nodes
             node_colors = ['b','g','r','y','c','k','m'] 
             
             # nodes
-            C_list = AL.fit_predict(G)[-1,:]
+            C_list = SL.fit_predict(G)[-1,:]
             for Clust in range(C_list.shape[1]):
                     nx.draw_networkx_nodes(G,pos,
                                            nodelist = list(C_list[0,Clust]),
                                            node_color=node_colors[Clust],
-                                           node_size=80,
+                                          node_size=80,
                                            alpha=0.8)
              
             # edges
@@ -59,10 +58,10 @@ def main(G):
             plt.savefig("labels_and_colors.png") # save as png
             plt.show() # display
             print "in level :",i 
-            print AL.__str__()
+            print SL.__str__()
 
 
-    except AVG.Average_linkage_Error:
+    except SIG.Single_linkage_Error:
         
         print( "Got an imput error, please change the input and try it again." )
 
