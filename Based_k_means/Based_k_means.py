@@ -6,45 +6,8 @@ Output : n clusters based on k_means
 import random
 import numpy as np
 import networkx as nx
-import matplotlib.pyplot as plt
 import operator
 import pandas
-import pylab
-
-
-
-G=nx.Graph()
-
-G.add_edge(0,1,weight=1)
-G.add_edge(0,2,weight=1)
-G.add_edge(2,4,weight=1)
-G.add_edge(2,5,weight=1)
-G.add_edge(0,3,weight=1)
-G.add_edge(6,3,weight=1)
-G.add_edge(7,3,weight=1)
-G.add_edge(8,1,weight=1)
-G.add_edge(9,1,weight=1)
-G.add_edge(9,8,weight=1)
-G.add_edge(6,7,weight=1)
-
-val_map = {'A': 1.0,
-                   'D': 0.5714285714285714,
-                              'H': 0.0}
-values = [val_map.get(node, 0.45) for node in G.nodes()]
-edge_colors = 'k'
-
-edge_labels=dict([((u,v,),d['weight'])
-             for u,v,d in G.edges(data=True)])
-pos=nx.spring_layout(G) # positions for all nodes                
-nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
-nx.draw(G,pos, node_color = values, node_size=15,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
-pylab.show()
-
-
-
-
-
-n_clusters = 3
 
 
 def _kmeans_init(G, n_clusters, method='balanced'):
@@ -56,14 +19,13 @@ def _kmeans_init(G, n_clusters, method='balanced'):
               i = random.choice(H.nodes())
               H.remove_node(i)
               Centroids.append(i)
-    return (Centroids)
-D_Matrix = nx.floyd_warshall_numpy(G)    
+    return (Centroids)  
 
 
-centeroids = _kmeans_init(G, n_clusters)
 def _cal_dist2center(G, Centeroids):
     """ Calculate the distances to cluster centers
-    """   
+    """  
+    D_Matrix = nx.floyd_warshall_numpy(G)  
     Dict = {}
     for i in Centeroids:
         Dict[i] = []
@@ -72,7 +34,6 @@ def _cal_dist2center(G, Centeroids):
     return(Dict) 
 
 
-Dict = _cal_dist2center(G, centeroids)
 def Dict2Matr(Dict):
     """ Change the dictionary to a matrix 
     """
@@ -83,7 +44,6 @@ def Dict2Matr(Dict):
     return(Matr)
 
 
-A = Dict2Matr(Dict)
 def _assign_clusters(G,A):
     """ Assign each point to the closet cluster center    
     """
@@ -100,7 +60,6 @@ def _assign_clusters(G,A):
     return(Clusters)
     
     
-Clusters = _assign_clusters(G,A)
 def _kmeans_run(G, n_clusters, centeroids):
     """ Run a single trial of k-means clustering
         on dataset X, and given number of clusters
@@ -130,11 +89,11 @@ def _update_centers(D_Matrix, Clusters, n_clusters):
     return(New_Centers)
 
 
-New_Centers = _update_centers(D_Matrix, Clusters, n_clusters)
 def _kmeans(G, n_clusters):
     """ Run multiple trials of k-means clustering,
         and outputt is the best centers, and cluster labels
     """
+    D_Matrix = nx.floyd_warshall_numpy(G)  
     Old_Centroids  = set(_kmeans_init(G, n_clusters, method='balanced'))
     Clusters = _kmeans_run(G, n_clusters, _kmeans_init(G, n_clusters))
     New_Centroids = set(_update_centers(D_Matrix, Clusters, n_clusters))
@@ -160,8 +119,7 @@ def Best_initial(G, n_clusters, iteration = 10):
     Help_Dict = {}
     for i in Candidates:
         Help_Dict[i] = Candidates.count(i)
-        
-           
+                  
     Best_Centroids = []
     for j in range(n_clusters):
         Max = max(Help_Dict.iteritems(), key=operator.itemgetter(1))[0]
@@ -170,70 +128,58 @@ def Best_initial(G, n_clusters, iteration = 10):
     return(Best_Centroids)
 
 
-print('Centroids :', Best_initial(G, n_clusters, iteration = 10))
-A = Best_initial(G, n_clusters, iteration = 10)
-print('Clusters :', _kmeans_run(G, n_clusters, A))
 
+##
+## Class KMeanserror
+##
+class KMeanserror( ValueError ):
+    
+    pass
 
+##
+## Class KMeans
+##
 class KMeans(object):
     """
         KMeans Clustering
         Parameters
         -------
-           n_clusters: number of clusters (default = 2)
+           G         : A connected graph 
+           n_clusters: number of clusters (default = 2)          
            max_iter: maximum number of iterations (default = 100)
            
-        Attributes
+        Attibutes
         -------
-           labels_   :  cluster labels for each data item
            centers_  :  cluster centers
-           
+           clusters_   :  number of iterations for the best trial
            
         Methods
         ------- 
            fit(X): fit the model
-           fit_predict(X): fit the model and return the clusters
+           fit_predict(X): fit the model and return the centroids and clusters
     """
 
-    def __init__(self, n_clusters=2, max_iter=100):
+    def __init__(self, G, n_clusters=2, max_iter=100):
         
+        self.G = G        
         self.n_clusters = n_clusters
         self.max_iter = max_iter
 
-    def fit(self, X):
+    def fit(self, G):
         """ Apply KMeans Clustering
               X: dataset with feature vectors
         """
-        self.centers_, self.labels_, self.sse_arr_, self.n_iter_ = \
-              _kmeans(X, self.n_clusters, self.max_iter, self.n_trials, self.tol)
+        self.centers_ =  Best_initial(self.G, self.n_clusters, self.max_iter)
+        self.clusters = _kmeans_run(self.G, self.n_clusters, self.centers_)
 
 
-    def fit_predict(self, X):
+    def fit_predict(self, G):
         """ Apply KMeans Clustering, 
             and return cluster labels
         """
-        self.fit(X)
-        return(self.labels_)
+        self.fit(G)
+        return(self.centers_, self.clusters)
 
 
-
-pos=nx.spring_layout(G) # positions for all nodes
-node_colors = ['b','g','r','y','c','k','m'] 
-# nodes
-Clust = _kmeans_run(G, n_clusters, A)
-
-
-for item in range(n_clusters):
-    for group in Clust[item]:
-        nx.draw_networkx_nodes(G,pos,
-                               nodelist = Clust[item],
-                               node_color=node_colors[item],
-                               node_size=80,
-                           alpha=0.8)
-
-edge_colors = 'k'
-edge_labels=dict([((u,v,),d['weight'])
-             for u,v,d in G.edges(data=True)])               
-nx.draw_networkx_edge_labels(G,pos,edge_labels=edge_labels)
-nx.draw(G,pos, node_color = values, node_size=1,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
-pylab.show()
+    def __str__(self):
+        return 'The centroids are: {0} \nThe clusters are: {1}'.format(self.centers_, self.clusters)
