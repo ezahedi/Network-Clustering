@@ -47,14 +47,14 @@ def Complete_Linkage(G, Iterations):
    
 
 ##
-## Class KMeanserror
+## Class Complete linkage error
 ##
 class Single_linkage_Error( ValueError ):
     
     pass
 
 ##
-## Class KMeans
+## Class Complete linkage
 ##
 class Complete_linkage(object):
     """
