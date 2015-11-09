@@ -1,12 +1,13 @@
+# -*- coding: utf-8 -*-
 """
 @authors: Emad Zahedi & Vahid Mirjalili
 Input: A graph G.
-Output: Clusters obtained by Single linkage method pluse drawn colored graphs 
+Output: Clusters obtained by Complete linkage method pluse drawn colored graphs 
 """
 import numpy as np
 import networkx as nx
 
-  
+
 def _Index(Matrix, a):
     """Return the index of an specific element, 'a', in the matrix"""
     for i in range(Matrix.shape[0]):
@@ -26,25 +27,24 @@ def Dis_Clus(G):
          
     A = np.vstack([D_Matrix, nodes_label])  
     return(A)
-    
+
  
-def Single_Linkage(G, Iterations):
-    """Give the clusters based on Single linkage method"""          
+def Complete_Linkage(G, Iterations):
+    """Give the clusters based on Complete linkage method"""          
     A = Dis_Clus(G)
     for iter in range(Iterations):
-        D_matrix = A[:-1,:]
-        minval = np.min(D_matrix[np.nonzero(D_matrix)])
-        i,j = _Index(D_matrix, minval)
-        for k in range(D_matrix.shape[1]):
-            A[i,k] = min(A[i,k] , A[j, k])
-            A[k,i] = min(A[k,i] , A[k, j])
-            A[i,i] = 0.0
+        i,j = np.unravel_index(A[:-1,:].argmax(), A[:-1,:].shape)
+        for k in range(A.shape[1]):
+            A[i,k] = max(A[i,k] , A[j, k])
+            A[k,i] = max(A[k,i] , A[k, j])
+            A[i,i] = 0
             A[-1,:][0,i] = (A[-1,:][0,i]) | (A[-1,:][0,j]) 
         A = np.delete(A, j, 0)
-        A = np.delete(A, j, 1)
-    return (A[-1,:])
-    
-    
+        A = np.delete(A, j, 1)     
+    return (A[-1,:])  
+   
+   
+   
 
 ##
 ## Class KMeanserror
@@ -56,9 +56,9 @@ class Single_linkage_Error( ValueError ):
 ##
 ## Class KMeans
 ##
-class Single_linkage(object):
+class Complete_linkage(object):
     """
-        Single_linkage Clustering
+        Complete_linkage Clustering
         Parameters
         -------
            G         : A connected graph 
@@ -81,14 +81,14 @@ class Single_linkage(object):
 
 
     def fit(self, G):
-        """ Apply Single-Linkage Clustering
+        """ Apply Complete-Linkage Clustering
               G: A weighted graph
         """
-        self.clusters = Single_Linkage(self.G, self.Iterations)
+        self.clusters = Complete_Linkage(self.G, self.Iterations)
 
 
     def fit_predict(self, G):
-        """ Apply Single-Linkage Clustering, 
+        """ Apply Complete-Linkage Clustering, 
             and return clusters 
         """
         self.fit(G)
