@@ -65,14 +65,14 @@ def Average_Linkage(G, Iterations):
 
 
 ##
-## Class KMeanserror
+## Class Average linkage error
 ##
 class Average_linkage_Error( ValueError ):
     
     pass
 
 ##
-## Class KMeans
+## Class Average linkage
 ##
 class Average_linkage(object):
     """
