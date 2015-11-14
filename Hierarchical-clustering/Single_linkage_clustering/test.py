@@ -39,7 +39,9 @@ def main(G):
             Iterations = i 
             SL = SIG.Single_linkage(G, Iterations)
             pos=nx.spring_layout(G) # positions for all nodes
-            node_colors = ['b','g','r','y','c','k','m'] 
+            node_colors = ['b','g','r','y','c','k','m','w']
+            for i in range(len(G)):
+                node_colors.append('w')
             
             # nodes
             C_list = SL.fit_predict(G)[-1,:]

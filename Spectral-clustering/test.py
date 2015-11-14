@@ -53,7 +53,8 @@ def main(G):
         SC = SCl.SpecClust(G)
         pos=nx.spring_layout(G) # positions for all nodes
         node_colors = ['b','g','r','y','c','k','m'] 
-        
+        for i in range(len(G)):
+                node_colors.append('w')
         Cluster_for_index = SC.fit_predict(G) 
         
         for i in range(n_cluster): 

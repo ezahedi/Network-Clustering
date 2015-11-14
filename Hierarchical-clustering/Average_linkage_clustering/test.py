@@ -41,6 +41,8 @@ def main(G):
             #print(AL.__str__())
             pos=nx.spring_layout(G) # positions for all nodes
             node_colors = ['b','g','r','y','c','k','m'] 
+            for i in range(len(G)):
+                node_colors.append('w')
             
             # nodes
             C_list = AL.fit_predict(G)[-1,:]
