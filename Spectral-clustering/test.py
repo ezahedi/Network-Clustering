@@ -1,8 +1,7 @@
-"""The algorithm is designed to find the min cut if you would like to find more
- clusters you need to change the variable 'n_cluster' iniside the 
- Spectral_Clustering.py as well.
- """
-
+"""
+Input : A connected graph G and the number of clusters, n_cluster. 
+Output : n clusters based on Spectral Clustering
+"""
 import Spectral_Clustering as SCl
 import networkx as nx
 import pylab
@@ -50,7 +49,7 @@ def main(G):
         nx.draw(G,pos, node_color = values, node_size=15,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
         pylab.show()
         
-        SC = SCl.SpecClust(G)
+        SC = SCl.SpecClust(G, n_cluster)
         pos=nx.spring_layout(G) # positions for all nodes
         node_colors = ['b','g','r','y','c','k','m'] 
         for i in range(len(G)):
@@ -76,7 +75,7 @@ def main(G):
         nx.draw(G,pos, node_color = values, node_size=1,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
         pylab.show()
         
-        print SC.__str__()
+        print (SC.__str__())
 
 
     except SCl.SpecClust_error:

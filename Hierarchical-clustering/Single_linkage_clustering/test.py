@@ -34,9 +34,9 @@ def main(G):
         nx.draw(G,pos, node_color = values, node_size=15,edge_color=edge_colors,edge_cmap=plt.cm.Reds)
         pylab.show()
 
-        for i in range(len(G.nodes())):
+        for ite in range(len(G.nodes())):
               
-            Iterations = i 
+            Iterations = ite 
             SL = SIG.Single_linkage(G, Iterations)
             pos=nx.spring_layout(G) # positions for all nodes
             node_colors = ['b','g','r','y','c','k','m','w']
@@ -59,7 +59,7 @@ def main(G):
             plt.axis('off')
             plt.savefig("labels_and_colors.png") # save as png
             plt.show() # display
-            print "in level :",i 
+            print "in level :",ite 
             print SL.__str__()
 
 
