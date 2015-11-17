@@ -9,126 +9,6 @@ import networkx as nx
 import operator
 import pandas
 
-
-def _kmeans_init(G, n_clusters, method='balanced'):
-    """ Initialize k=n_clusters centroids randomly
-    """
-    Centroids = []
-    H = G.copy()
-    for pop in range(n_clusters):           
-              i = random.choice(H.nodes())
-              H.remove_node(i)
-              Centroids.append(i)
-    return (Centroids)  
-
-
-def _cal_dist2center(G, Centeroids):
-    """ Calculate the distances to cluster centers
-    """  
-    D_Matrix = nx.floyd_warshall_numpy(G)  
-    Dict = {}
-    for i in Centeroids:
-        Dict[i] = []
-        for j in range(len(G.nodes())):
-            Dict[i].append(D_Matrix[i,j])
-    return(Dict) 
-
-
-def Dict2Matr(Dict):
-    """ Change the dictionary to a matrix 
-    """
-    df    = pandas.DataFrame(Dict)
-    Matr  = df.values
-    Centr = df.columns
-    Matr = np.vstack([Matr, Centr])
-    return(Matr)
-
-
-def _assign_clusters(G,A):
-    """ Assign each point to the closet cluster center    
-    """
-    Dict = {}
-    D_mat = A[:-1,:]  #distance matrix
-    C_list = A[-1,:]  #centroid list
-    for i in C_list:
-        Dict[i] = []
-    for j in range(len(G.nodes())):
-        Dict[C_list [D_mat.argmin(1)[j]]].append(j)
-    Clusters = []
-    for i in C_list:
-            Clusters.append(Dict[i])
-    return(Clusters)
-    
-    
-def _kmeans_run(G, n_clusters, centeroids):
-    """ Run a single trial of k-means clustering
-        on dataset X, and given number of clusters
-    """
-    
-    Dict = _cal_dist2center(G, centeroids)
-    A = Dict2Matr(Dict)
-    Clusters = _assign_clusters(G,A)
-    return(Clusters)
-
-
-def _update_centers(D_Matrix, Clusters, n_clusters):
-    """ Update Cluster Centers:
-           assign the centroid with min SSE for each cluster
-    """
-    New_Centers = []
-    for clust in Clusters:
-        X =[]        
-        for i in clust:
-            Sum = 0
-            for j in clust:
-                Sum += D_Matrix[i,j]            
-            X.append(Sum)
-        a = X.index(min(X))
-        New_Centers.append(clust[a])
-        
-    return(New_Centers)
-
-
-def _kmeans(G, n_clusters):
-    """ Run multiple trials of k-means clustering,
-        and outputt is the best centers, and cluster labels
-    """
-    D_Matrix = nx.floyd_warshall_numpy(G)  
-    Old_Centroids  = set(_kmeans_init(G, n_clusters, method='balanced'))
-    Clusters = _kmeans_run(G, n_clusters, _kmeans_init(G, n_clusters))
-    New_Centroids = set(_update_centers(D_Matrix, Clusters, n_clusters))
-    while True :
-        if Old_Centroids == New_Centroids:
-            return(New_Centroids) #,_kmeans_run(G, n_clusters, New_Centroids))
-            break
-        
-        else:
-            Old_Centroids = New_Centroids
-            New_Centroids = list(New_Centroids)
-            Clusters = _kmeans_run(G, n_clusters, New_Centroids)
-            New_Centroids = set(_update_centers(D_Matrix, Clusters, n_clusters))
-
-
-def Best_initial(G, n_clusters, iteration = 10):
-    iteration = 10
-    Candidates = []
-    for i in range(iteration):
-        local_centroids = _kmeans(G, n_clusters) 
-        for k in local_centroids:
-            Candidates.append(k)
-    Help_Dict = {}
-    for i in Candidates:
-        Help_Dict[i] = Candidates.count(i)
-                  
-    Best_Centroids = []
-    for j in range(n_clusters):
-        Max = max(Help_Dict.iteritems(), key=operator.itemgetter(1))[0]
-        Best_Centroids.append(Max)
-        del Help_Dict[Max]
-    return(Best_Centroids)
-
-
-
 ##
 ## Class KMeanserror
 ##
@@ -164,13 +44,132 @@ class KMeans(object):
         self.G = G        
         self.n_clusters = n_clusters
         self.max_iter = max_iter
+ 
+
+    def _kmeans_init(self,method='balanced'):
+        """ Initialize k=n_clusters centroids randomly
+        """
+        Centroids = []
+        H = self.G.copy()
+        for pop in range(self.n_clusters):           
+                  i = random.choice(H.nodes())
+                  H.remove_node(i)
+                  Centroids.append(i)
+        return (Centroids)  
+    
+    
+    def _cal_dist2center(self, Centeroids):
+        """ Calculate the distances to cluster centers
+        """  
+        D_Matrix = nx.floyd_warshall_numpy(self.G)  
+        Dict = {}
+        for i in Centeroids:
+            Dict[i] = []
+            for j in range(len(self.G.nodes())):
+                Dict[i].append(D_Matrix[i,j])
+        return(Dict) 
+    
+    
+    def Dict2Matr(self, Dict):
+        """ Change the dictionary to a matrix 
+        """
+        df    = pandas.DataFrame(Dict)
+        Matr  = df.values
+        Centr = df.columns
+        Matr = np.vstack([Matr, Centr])
+        return(Matr)
+    
+    
+    def _assign_clusters(self,A):
+        """ Assign each point to the closet cluster center    
+        """
+        Dict = {}
+        D_mat = A[:-1,:]  #distance matrix
+        C_list = A[-1,:]  #centroid list
+        for i in C_list:
+            Dict[i] = []
+        for j in range(len(self.G.nodes())):
+            Dict[C_list [D_mat.argmin(1)[j]]].append(j)
+        Clusters = []
+        for i in C_list:
+                Clusters.append(Dict[i])
+        return(Clusters)
+        
+        
+    def _kmeans_run(self, centeroids):
+        """ Run a single trial of k-means clustering
+            on dataset X, and given number of clusters
+        """
+        
+        Dict = self._cal_dist2center(centeroids)
+        A = self.Dict2Matr(Dict)
+        Clusters = self._assign_clusters(A)
+        return(Clusters)
+    
+    
+    def _update_centers(self, D_Matrix, Clusters):
+        """ Update Cluster Centers:
+               assign the centroid with min SSE for each cluster
+        """
+        New_Centers = []
+        for clust in Clusters:
+            X =[]        
+            for i in clust:
+                Sum = 0
+                for j in clust:
+                    Sum += D_Matrix[i,j]            
+                X.append(Sum)
+            a = X.index(min(X))
+            New_Centers.append(clust[a])        
+        return(New_Centers)
+
+
+    def _kmeans(self):
+        """ Run multiple trials of k-means clustering,
+            and outputt is the best centers, and cluster labels
+        """
+        D_Matrix = nx.floyd_warshall_numpy(self.G)  
+        Old_Centroids  = set(self._kmeans_init())
+        Clusters = self._kmeans_run(self._kmeans_init())
+        New_Centroids = set(self._update_centers(D_Matrix, Clusters))
+        while True :
+            if Old_Centroids == New_Centroids:
+                return(New_Centroids) 
+                break
+            
+            else:
+                Old_Centroids = New_Centroids
+                New_Centroids = list(New_Centroids)
+                Clusters = self._kmeans_run(New_Centroids)
+                New_Centroids = set(self._update_centers(D_Matrix, Clusters))
+           
+        
+    
+    def Best_initial(self, iteration = 10):
+        iteration = 10
+        Candidates = []
+        for i in range(iteration):
+            local_centroids = self._kmeans() 
+            for k in local_centroids:
+                Candidates.append(k)
+        Help_Dict = {}
+        for i in Candidates:
+            Help_Dict[i] = Candidates.count(i)
+                      
+        Best_Centroids = []
+        for j in range(self.n_clusters):
+            Max = max(Help_Dict.iteritems(), key=operator.itemgetter(1))[0]
+            Best_Centroids.append(Max)
+            del Help_Dict[Max]
+        return(Best_Centroids)
+
 
     def fit(self, G):
         """ Apply KMeans Clustering
               X: dataset with feature vectors
         """
-        self.centers_ =  Best_initial(self.G, self.n_clusters, self.max_iter)
-        self.clusters = _kmeans_run(self.G, self.n_clusters, self.centers_)
+        self.centers_ =  self.Best_initial(self)
+        self.clusters = self._kmeans_run(self.centers_)
 
 
     def fit_predict(self, G):

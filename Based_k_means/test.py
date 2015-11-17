@@ -1,3 +1,7 @@
+"""
+Input: A graph G with integer label's node and the number of clusters, n_clusters
+Output: Output : n clusters and the colored graph based on k-means clustering. 
+"""
 import Based_k_means as BKM
 import networkx as nx
 import pylab
@@ -72,7 +76,7 @@ def main(G):
         print(km.__str__())
 
 
-    except BKM.KMeansError:
+    except BKM.KMeanserror:
         
         print( "Got an imput error, please change the input and try it again." )
 

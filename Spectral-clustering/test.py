@@ -1,6 +1,6 @@
 """
 Input : A connected graph G and the number of clusters, n_cluster. 
-Output : n clusters based on Spectral Clustering
+Output : n clusters and the colored graph based on Spectral Clustering. 
 """
 import Spectral_Clustering as SCl
 import networkx as nx
