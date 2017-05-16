@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-@authors: Emad Zahedi & Vahid Mirjalili
+@authors: Emad Zahedi 
 Input: A graph G.
 Output: Clusters obtained by Average linkage method pluse drawn colored graphs 
 Note: If you are looking for specific level, like 'k', of clusters remove the for loop and initiate Iteration = 'k'
